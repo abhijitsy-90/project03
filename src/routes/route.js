@@ -1,21 +1,39 @@
-const express=require('express')
-const router=express.Router();
-const userController=require('../controller/userController')
-const bookController=require('../controller/bookController')
-const mid=require('../middleware/auth')
-const reviewController=require('../controller/reviewController')
+const express = require('express')
+const router = express.Router();
+const userController = require('../controller/userController')
+const bookController = require('../controller/bookController')
+const reviewController = require('../controller/reviewController')
+const middleWare = require('../middleware/auth')
 
-router.post('/register',userController.createUser)
-router.post('/login',userController.loginUser)
+//-------------------register-----------------------------//
+router.post('/register', userController.createUser)
 
-router.post('/books',mid.authenticate,mid.authorisation,bookController.createBook)
-router.get('/books',mid.authenticate,bookController.getBooks)
-router.get('/books/:bookId',mid.authenticate,bookController.getBookById)
-router.put('/books/:bookId',mid.authenticate,mid.authorisation,bookController.updateBook)
-router.delete('/books/:bookId',mid.authenticate,mid.authorisation,bookController.deleteBook)
+//--------------------Loginuser---------------------------//
+router.post('/login', userController.loginUser)
 
-router.post('/books/:bookId/review',reviewController.createReview)
-router.put('/books/:bookId/review/:reviewId',reviewController.updateReview)
-router.delete('/books/:bookId/review/:reviewId',reviewController.deleteReview)
+//--------------------createbook--------------------------//
 
-module.exports=router
+router.post('/books', middleWare.authenticate, middleWare.authorisation, bookController.createBook)
+
+//--------------------getebookbyquery---------------------//
+router.get('/books', middleWare.authenticate, bookController.getBooks)
+
+//--------------------getebookbyId------------------------//
+router.get('/books/:bookId', middleWare.authenticate, bookController.getBookById)
+
+//--------------------updatebook--------------------------//
+router.put('/books/:bookId', middleWare.authenticate, middleWare.authorisation, bookController.updateBook)
+
+//--------------------deletetebook-------------------------//
+router.delete('/books/:bookId', middleWare.authenticate, middleWare.authorisation, bookController.deleteBook)
+    //--------------------createReview-------------------------//
+
+router.post('/books/:bookId/review', reviewController.createReview)
+
+//--------------------updateteReview-------------------------//
+router.put('/books/:bookId/review/:reviewId', reviewController.updateReview)
+
+//--------------------deleteReview----------------------------//
+router.delete('/books/:bookId/review/:reviewId', reviewController.deleteReview)
+
+module.exports = router
