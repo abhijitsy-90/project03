@@ -7,16 +7,16 @@ const ObjectId = mongoose.Types.ObjectId
 
 
 
-const authenticate = function (req, res, next) {
+const authenticate = function(req, res, next) {
     try {
         let token = req.headers["x-api-key"];
         if (!token) return res.status(400).send({ status: false, msg: "token must be present" });
 
 
-        jwt.verify(token, "Group-69-Project-3", function (err, decodedToken) {
+        jwt.verify(token, "Group-69-Project-3", function(err, decodedToken) {
             if (err) {
                 let message =
-                    err.message === "jwt expired" ? "Token is expired" : "Token is ivalid";
+                    err.message === "jwt expired" ? "Token is expired" : "Token is invalid";
                 return res.status(401).send({ status: false, msg: message })
             }
 
@@ -27,14 +27,13 @@ const authenticate = function (req, res, next) {
         });
 
 
-    }
-    catch (err) {
+    } catch (err) {
         return res.status(500).send({ status: false, msg: err.message });
     }
 }
 
 
-const authorisation = async function (req, res, next) {
+const authorisation = async function(req, res, next) {
     try {
         //check authorization when data is coming from request body
         let userLoggedIn = req.decodedToken.userId
@@ -52,7 +51,7 @@ const authorisation = async function (req, res, next) {
             if (userId !== userLoggedIn) return res.status(403).send({ status: false, msg: 'User not authorized to perform this action' })
             next()
         }
-        if (req.params.bookId) {  //check authorization when id is coming from path params
+        if (req.params.bookId) { //check authorization when id is coming from path params
 
             let bId = req.params.bookId;
 
@@ -74,8 +73,7 @@ const authorisation = async function (req, res, next) {
 
         }
 
-    }
-    catch (err) {
+    } catch (err) {
         return res.status(500).send({ status: false, msg: err.message })
     }
 }
