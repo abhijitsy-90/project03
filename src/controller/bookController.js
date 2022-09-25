@@ -7,8 +7,7 @@ const moment = require('moment');
 const reviewModel = require('../models/reviewModel');
 
 
-
-
+//--------------------------------Create Book--------------------------------------//
 const createBook = async function(req, res) {
         try {
             let data = req.body;
@@ -45,6 +44,7 @@ const createBook = async function(req, res) {
             var date = moment(releasedAt, 'YYYY-MM-DD', true).isValid()
             if (!date) return res.status(400).send({ status: false, msg: "format of date is wrong,correct fromat is YYYY-MM-DD" })
 
+            //-------------------------validation Duplicate title,ISBN---------------------------------//
             let dupTitle = await bookModel.findOne({ title: title })
             if (dupTitle) return res.status(400).send({ status: false, msg: `Book title ${title} is already in use` })
 
@@ -61,6 +61,7 @@ const createBook = async function(req, res) {
 
     } //function ends here
 
+//--------------------------------Get  Book--------------------------------------//
 
 const getBooks = async function(req, res) {
         try {
@@ -106,6 +107,8 @@ const getBooks = async function(req, res) {
     } //main function scope ends here
 
 
+
+//--------------------------------Get BookbyId--------------------------------------//
 const getBookById = async function(req, res) {
     try {
         let bId = req.params.bookId
@@ -129,7 +132,7 @@ const getBookById = async function(req, res) {
 
 }
 
-
+//--------------------------------Update Book--------------------------------------//
 
 const updateBook = async function(req, res) {
     try {
@@ -181,6 +184,7 @@ const updateBook = async function(req, res) {
 }
 
 
+//--------------------------------Delete Book--------------------------------------//
 const deleteBook = async function(req, res) {
     try {
         let bId = req.params.bookId;

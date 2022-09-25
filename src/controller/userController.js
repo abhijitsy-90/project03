@@ -3,68 +3,72 @@ const validator = require('../validators/validator')
 const validation = require("validator");
 const jwt = require('jsonwebtoken');
 
-const createUser = async function (req, res) {
+//-------------------------------Create user-------------------------------------//
 
-    try {
-        let data = req.body;
-        let { title, name, phone, email, password, address } = data  //Object destructuring
+const createUser = async function(req, res) {
 
-        //Request body validation
+        try {
+            let data = req.body;
+            let { title, name, phone, email, password, address } = data //Object destructuring
 
-        if (Object.keys(data).length == 0) return res.status(400).send({ status: false, msg: "Request body cannot be empty,please provide user details to create user" })
+            //Request body validation
 
-        //Validation for data inside request body
+            if (Object.keys(data).length == 0) return res.status(400).send({ status: false, msg: "Request body cannot be empty,please provide user details to create user" })
 
-        if (!validator.isValidEnum(title)) return res.status(400).send({ status: false, msg: "Please enter a valid title,available titles are ['Mr','Mrs','Miss.]" })
+            //Validation for data inside request body
 
-        if (!validator.isValid(name)) return res.status(400).send({ status: false, msg: "Please enter a valid name" })
+            if (!validator.isValidEnum(title)) return res.status(400).send({ status: false, msg: "Please enter a valid title,available titles are ['Mr','Mrs','Miss.]" })
 
-        if (!validator.isValid(email)) return res.status(400).send({ status: false, msg: "Please enter a valid email" })
+            if (!validator.isValid(name)) return res.status(400).send({ status: false, msg: "Please enter a valid name" })
 
-        if (!validation.isEmail(email)) return res.status(400).send({ status: false, msg: "format of email is not valid" })
+            if (!validator.isValid(email)) return res.status(400).send({ status: false, msg: "Please enter a valid email" })
 
-        if (!validator.isValid(phone)) return res.status(400).send({ status: false, msg: "Please enter a valid phone number" })
+            if (!validation.isEmail(email)) return res.status(400).send({ status: false, msg: "format of email is not valid" })
 
-        const mobile = /^(\+\d{1,3}[- ]?)?\d{10}$/.test(phone)
-        if (mobile == false) return res.status(400).send({ status: false, msg: "Mobile number should be a valid Indian mobile number" })
+            if (!validator.isValid(phone)) return res.status(400).send({ status: false, msg: "Please enter a valid phone number" })
 
-        if (!validator.isValid(password)) return res.status(400).send({ status: false, msg: "Please enter a valid password" })
+            const mobile = /^(\+\d{1,3}[- ]?)?\d{10}$/.test(phone)
+            if (mobile == false) return res.status(400).send({ status: false, msg: "Mobile number should be a valid Indian mobile number" })
 
-        const password1 = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,15})/.test(password)
-        if (password1 == false) return res.status(400).send({ status: false, msg: "Password should contain min:8 and max:15 characters " })
+            if (!validator.isValid(password)) return res.status(400).send({ status: false, msg: "Please enter a valid password" })
 
-        if (address) {  //address object validation
+            const password1 = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,15})/.test(password)
+            if (password1 == false) return res.status(400).send({ status: false, msg: "Password should contain min:8 and max:15 characters " })
 
-            if (typeof address != "object") return res.status(400).send({ status: false, msg: "Type of address must be object" })
+            if (address) { //address object validation
 
-            if (Object.keys(address).length === 0) return res.status(400).send({ status: false, msg: "Address body cannot be empty,please provide address details" })
+                if (typeof address != "object") return res.status(400).send({ status: false, msg: "Type of address must be object" })
 
-            if (!validator.isValid(address.street)) return res.status(400).send({ status: false, msg: "Please enter a valid address street" })
+                if (Object.keys(address).length === 0) return res.status(400).send({ status: false, msg: "Address body cannot be empty,please provide address details" })
 
-            if (!validator.isValid(address.city)) return res.status(400).send({ status: false, msg: "Please enter a valid city for address" })
+                if (!validator.isValid(address.street)) return res.status(400).send({ status: false, msg: "Please enter a valid address street" })
 
-            if (!validator.isValid(address.pincode)) return res.status(400).send({ status: false, msg: "Please enter a valid pincode for address" })
+                if (!validator.isValid(address.city)) return res.status(400).send({ status: false, msg: "Please enter a valid city for address" })
+
+                if (!validator.isValid(address.pincode)) return res.status(400).send({ status: false, msg: "Please enter a valid pincode for address" })
+            }
+
+            //checking uniqueness of phone and email
+
+            let dupPhone = await userModel.findOne({ phone: phone })
+            if (dupPhone) return res.status(409).send({ status: false, msg: `This mobile number is ${phone} already in use ` })
+
+            let dupEmail = await userModel.findOne({ email: email })
+            if (dupEmail) return res.status(409).send({ status: false, msg: `This email id is ${email} already in use ` })
+
+            let createdUser = await userModel.create(data)
+            return res.status(201).send({ status: true, msg: "Success", data: createdUser })
+                //console.log(createdUser)
+        } catch (err) {
+            return res.status(500).send({ status: false, msg: err.message })
         }
 
-        //checking uniqueness of phone and email
 
-        let dupPhone = await userModel.findOne({ phone: phone })
-        if (dupPhone) return res.status(409).send({ status: false, msg: `This mobile number is ${phone} already in use ` })
+    } //function ends here
 
-        let dupEmail = await userModel.findOne({ email: email })
-        if (dupEmail) return res.status(409).send({ status: false, msg: `This email id is ${email} already in use ` })
+//-------------------------------Login user-------------------------------------//
 
-        let createdUser = await userModel.create(data)
-        return res.status(201).send({ status: true, msg: "Success", data: createdUser })
-        //console.log(createdUser)
-    } catch (err) {
-        return res.status(500).send({ status: false, msg: err.message })
-    }
-
-
-}//function ends here
-
-const loginUser = async function (req, res) {
+const loginUser = async function(req, res) {
     try {
         let data = req.body;
         let { email, password } = data

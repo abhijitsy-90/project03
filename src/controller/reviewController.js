@@ -4,6 +4,9 @@ const bookModel = require('../models/bookModel');
 const ObjectId = mongoose.Types.ObjectId;
 const validator = require('../validators/validator')
 
+
+//-----------------------create Review--------------------------------//
+
 const createReview = async function(req, res) {
 
     try {
@@ -48,6 +51,8 @@ const createReview = async function(req, res) {
     }
 }
 
+
+//-----------------------Update Review--------------------------------//
 const updateReview = async function(req, res) {
 
     try {
@@ -106,7 +111,7 @@ const updateReview = async function(req, res) {
 }
 
 
-
+//-----------------------Delete Review--------------------------------//
 const deleteReview = async function(req, res) {
     try {
         let bId = req.params.bookId;

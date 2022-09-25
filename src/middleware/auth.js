@@ -6,7 +6,7 @@ const validator = require('../validators/validator')
 const ObjectId = mongoose.Types.ObjectId
 
 
-
+//----------------------------AUTHENTICATION--------------------------------------//
 const authenticate = function(req, res, next) {
     try {
         let token = req.headers["x-api-key"];
@@ -32,6 +32,8 @@ const authenticate = function(req, res, next) {
     }
 }
 
+
+//--------------------------------AUTHORIZATION---------------------------------------//
 
 const authorisation = async function(req, res, next) {
     try {
