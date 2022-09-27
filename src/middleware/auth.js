@@ -51,7 +51,7 @@ const authorisation = async function(req, res, next) {
             if (!userToCreateBook) return res.status(404).send({ status: false, msg: "No such user present" })
 
             if (userId !== userLoggedIn) return res.status(403).send({ status: false, msg: 'User not authorized to perform this action' })
-            next()
+            return next()
         }
         if (req.params.bookId) { //check authorization when id is coming from path params
 
@@ -71,9 +71,10 @@ const authorisation = async function(req, res, next) {
 
             if (checkBook.isDeleted == true) return res.status(400).send({ status: false, msg: "Book with the given id is already deleted!!" })
 
-            next()
+            return next()
 
         }
+        next()
 
     } catch (err) {
         return res.status(500).send({ status: false, msg: err.message })
