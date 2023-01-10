@@ -19,9 +19,9 @@ const createReview = async function(req, res) {
                     status: false,
                     msg: "Invalid Book id in path params,book id shouls be of 24 digits",
                 });
-
+   
         let checkBook = await bookModel.findById(bId);
-        if (!checkBook)
+        if (!checkBook) 
             return res
                 .status(404)
                 .send({ status: false, msg: "No book found for this book id!!" });

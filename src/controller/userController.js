@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 
 const createUser = async function(req, res) {
 
-        try {
+        try { 
             let data = req.body;
             let { title, name, phone, email, password, address } = data //Object destructuring
 
@@ -15,7 +15,7 @@ const createUser = async function(req, res) {
 
             if (Object.keys(data).length == 0) return res.status(400).send({ status: false, msg: "Request body cannot be empty,please provide user details to create user" })
 
-            //Validation for data inside request body
+            //Validation for data inside request body 
 
             if (!validator.isValidEnum(title)) return res.status(400).send({ status: false, msg: "Please enter a valid title,available titles are ['Mr','Mrs','Miss.]" })
 
